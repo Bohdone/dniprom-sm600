@@ -1,0 +1,758 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Інтерактивна інструкція до мультиметра Dnipro-M SM600: усі режими, кнопки, гнізда й покрокові виміри.">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Мультиметр SM600</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: the meter as a live instrument on the left (sticky), an operator's panel on the right; reference strip below. */
+:root{
+  --bg:#ebeae6; --surface:#f8f7f4; --ink:#1b1c1e; --muted:#5c5e62; --line:#d4d1ca;
+  --accent:#cf4510; --accent-ink:#ffffff; --tint:#f6e3d8; --tint-ink:#7d2905; --tip:#e4e6e2; --tip-ink:#2d3330;
+  --dev-bump:#141516; --dev-body:#222428; --dev-face:#2c2f34; --dev-line:#4d5158; --dev-text:#ebe9e4; --dev-dim:#8e9198;
+  --dev-hole:#070707; --dev-press:#3b3f45; --orange:#ff6a1f; --dz-on:rgba(255,106,31,.16);
+  --dev-red:#d93a22; --dev-red-ink:#ffffff; --sel-btn:#ee4a1f;
+  --lcd:#a9b3a1; --lcd-lit:#cdeab8; --seg:#141c16; --seg-ghost:rgba(20,28,22,.07);
+  --probe-red:#d62f26; --probe-black:#0c0c0d; --led-off:#3a1612; --led-on:#ff3b2f;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#131416; --surface:#1c1e21; --ink:#ecebe7; --muted:#a2a4a9; --line:#32353a;
+  --accent:#ff7a3a; --accent-ink:#1d0c03; --tint:#3a2014; --tint-ink:#ffc6a6; --tip:#24272b; --tip-ink:#d6d9dc;
+  --dev-bump:#0a0a0b; --dev-body:#2a2d32; --dev-face:#34373d; --dev-line:#575b63; --probe-black:#060607;
+  color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#131416; --surface:#1c1e21; --ink:#ecebe7; --muted:#a2a4a9; --line:#32353a;
+  --accent:#ff7a3a; --accent-ink:#1d0c03; --tint:#3a2014; --tint-ink:#ffc6a6; --tip:#24272b; --tip-ink:#d6d9dc;
+  --dev-bump:#0a0a0b; --dev-body:#2a2d32; --dev-face:#34373d; --dev-line:#575b63; --probe-black:#060607;
+  color-scheme:dark }
+
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-body)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 56px}
+
+header{display:grid;gap:10px;max-width:70ch}
+.stripe{width:88px;height:7px;border-radius:2px;background:repeating-linear-gradient(-45deg,var(--accent) 0 8px,var(--ink) 8px 16px)}
+.kicker{font:500 12px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font:700 clamp(26px,4.2vw,42px)/1.08 var(--f-display);letter-spacing:-.01em;margin:0;text-wrap:balance}
+.lede{margin:0;color:var(--muted);max-width:62ch}
+
+.stage{display:grid;grid-template-columns:minmax(280px,390px) minmax(0,1fr);gap:40px;align-items:start;margin-top:28px}
+.meter-wrap{position:sticky;top:16px}
+#meter{display:block;width:100%;height:auto;max-height:calc(100vh - 32px);margin:0 auto;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.hint{margin:8px 0 0;text-align:center;font:500 12px var(--f-mono);color:var(--muted)}
+
+.panel{min-width:0;display:grid;gap:18px}
+.tabs{display:inline-flex;justify-self:start;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px;gap:2px}
+.tabs button{font:600 14px var(--f-body);border:0;background:transparent;color:var(--muted);padding:8px 18px;border-radius:999px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+.tabs button:focus-visible,.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.picker{display:grid;gap:12px}
+.group{display:grid;gap:6px}
+.glabel{font:500 11px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:500 14px var(--f-body);border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 12px;border-radius:8px;cursor:pointer;line-height:1.3}
+.chip:hover{border-color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip .n{font:500 11px var(--f-mono);opacity:.6;margin-right:6px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 24px;display:grid;gap:14px}
+.eyebrow{font:500 11px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.card h2{font:600 clamp(19px,2.4vw,24px)/1.2 var(--f-display);margin:0;text-wrap:balance}
+.card p{margin:0;max-width:65ch}
+.probes{display:flex;flex-wrap:wrap;gap:8px 18px;font:500 14px var(--f-body)}
+.pr{display:inline-flex;align-items:center;gap:8px}
+.d{width:12px;height:12px;border-radius:50%;display:inline-block;flex:none}
+.d.r{background:var(--probe-red)} .d.k{background:var(--probe-black);box-shadow:0 0 0 1.5px var(--muted)}
+.sub{display:grid;gap:6px}
+.spec{font:500 13px/1.6 var(--f-mono);color:var(--muted);border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);padding-block:8px;max-width:65ch}
+.spec b{color:var(--ink);font-weight:700}
+.steps{list-style:none;counter-reset:s;margin:0;padding:0;display:grid;gap:10px;max-width:65ch}
+.steps li{counter-increment:s;display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;align-items:start}
+.steps li::before{content:counter(s);font:700 12px/24px var(--f-mono);text-align:center;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--ink);margin-top:1px}
+.note{border-radius:10px;padding:12px 14px;font-size:15px;display:grid;gap:4px;max-width:65ch}
+.note b{font:600 11px var(--f-mono);letter-spacing:.1em;text-transform:uppercase}
+.note.warn{background:var(--tint);color:var(--tint-ink)}
+.note.tip{background:var(--tip);color:var(--tip-ink)}
+.result{font:500 14px/1.5 var(--f-mono);background:var(--tip);color:var(--tip-ink);border-radius:10px;padding:12px 14px;max-width:65ch}
+.acts{display:flex;flex-wrap:wrap;gap:8px}
+
+dl.gl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 16px}
+dl.gl dt{font:700 14px var(--f-mono);white-space:nowrap}
+dl.gl dd{margin:0;color:var(--muted)}
+
+.ref{margin-top:48px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.ref h2{font:600 18px var(--f-display);margin:0 0 12px}
+.ref ul{margin:0;padding-left:20px;display:grid;gap:8px}
+.ref li::marker{color:var(--accent)}
+.foot{margin-top:28px;font-size:13px;color:var(--muted);max-width:75ch}
+
+/* SVG device */
+.sv-bump{fill:var(--dev-bump)} .sv-body{fill:var(--dev-body)}
+.sv-face{fill:var(--dev-face);stroke:var(--dev-line);stroke-width:1.5}
+.sv-ring{fill:none;stroke:var(--dev-line);stroke-width:1.5}
+.sv-div{stroke:var(--dev-red);stroke-width:2.2;stroke-linecap:round}
+.sv-arc{fill:none;stroke:var(--dev-red);stroke-width:2.5;stroke-linecap:round}
+.sv-t{fill:var(--dev-dim);font:600 9px var(--f-mono);letter-spacing:.06em;text-anchor:middle}
+.sv-t2{fill:var(--dev-text);font:600 9.5px var(--f-body);letter-spacing:.14em;text-anchor:middle}
+.sv-brand{fill:var(--dev-red);font:700 13px var(--f-display);letter-spacing:.02em}
+.sv-model{fill:var(--dev-text);font:600 11px var(--f-display);text-anchor:end;letter-spacing:.06em}
+.knob{fill:var(--dev-bump);stroke:var(--dev-line);stroke-width:1.5}
+.grip{stroke:var(--dev-line);stroke-width:2}
+.ridge{fill:var(--dev-face);stroke:var(--dev-line);stroke-width:1.5}
+.ptr{fill:var(--orange)}
+.lens{fill:#c8ccd1;stroke:var(--dev-line);stroke-width:1.5}
+.bezel{fill:var(--dev-hole)}
+#screen{fill:var(--lcd);transition:fill .25s}
+#screen.lit{fill:var(--lcd-lit)}
+.seg{fill:var(--seg-ghost)} .seg.on{fill:var(--seg)}
+.ann{fill:var(--seg-ghost);font:700 10px var(--f-mono)} .ann.on{fill:var(--seg)}
+.annico{fill:none;stroke:var(--seg-ghost);stroke-width:1.6;stroke-linecap:round} .annico.on{stroke:var(--seg)}
+path.ann{stroke:none}
+.unit{fill:var(--seg);font:700 15px var(--f-mono);text-anchor:end}
+.led{fill:var(--led-off)} .led.on{fill:var(--led-on)}
+.beam{fill:#fff1bd;opacity:.75}
+
+.hot{cursor:pointer;outline:none}
+.cap{fill:var(--dev-face);stroke:var(--dev-line);stroke-width:1.5;transition:fill .12s}
+.cap.red{fill:var(--sel-btn);stroke:var(--sel-btn)}
+.btn.press .cap{fill:var(--dev-press)}
+.bt{fill:var(--dev-text);font:700 12px var(--f-body);text-anchor:middle}
+.ico{stroke:var(--dev-text);stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.icof{fill:var(--dev-text)} .icor{fill:none;stroke:var(--dev-text);stroke-width:1.6}
+.bolt{fill:var(--dev-text)}
+.dl{fill:var(--dev-text);font:600 10px var(--f-display);text-anchor:middle}
+.dl.big{font-size:14px}
+.ds{fill:var(--dev-dim);font:600 8px var(--f-mono);text-anchor:middle}
+.hit{fill:rgba(0,0,0,0);stroke:none}
+.smart-sec{fill:var(--dev-red);stroke:none}
+.sl{fill:var(--dev-red-ink);font:600 9.5px var(--f-display);text-anchor:middle}
+.sl.big{font-size:13px}
+.sli{stroke:var(--dev-red-ink);stroke-width:1.5;fill:none;stroke-linecap:round}
+.dz.on .hit{fill:var(--dz-on);stroke:var(--orange);stroke-width:1.5}
+.dz.on .smart-sec{stroke:var(--orange);stroke-width:3}
+.dz.on .dl{fill:var(--orange)} .dz.on .ico{stroke:var(--orange)} .dz.on .icof{fill:var(--orange)} .dz.on .icor{stroke:var(--orange)} .dz.on .bolt{fill:var(--orange)}
+.jring{fill:var(--dev-bump);stroke:var(--dev-line);stroke-width:2}
+.jhole{fill:var(--dev-hole);stroke:var(--dev-line);stroke-width:1}
+.jpin{fill:var(--dev-face)}
+.jl{fill:var(--dev-text);font:700 13px var(--f-body);text-anchor:middle}
+.sel .cap,.sel .jring,.sel #screenframe,.sel .zone{stroke:var(--orange);stroke-width:3}
+.hot:focus-visible .cap,.hot:focus-visible .jring,.hot:focus-visible #screenframe,.hot:focus-visible .zone,.hot:focus-visible .hit,.hot:focus-visible .smart-sec{stroke:var(--orange);stroke-width:2.5;stroke-dasharray:4 3}
+#screenframe{fill:none;stroke:transparent;stroke-width:3}
+.zone{fill:rgba(0,0,0,0);stroke:transparent}
+.w-red{stroke:var(--probe-red);stroke-width:9;fill:none;stroke-linecap:round}
+.w-blk{stroke:var(--probe-black);stroke-width:9;fill:none;stroke-linecap:round}
+.w-edge{stroke:var(--dev-line);stroke-width:12;fill:none;stroke-linecap:round}
+.p-red{fill:var(--probe-red);stroke:var(--dev-hole);stroke-width:2}
+.p-blk{fill:var(--probe-black);stroke:var(--dev-line);stroke-width:2}
+.p-shine{fill:rgba(255,255,255,.18)}
+
+.navbar{display:grid;gap:18px;min-width:0}
+#meter{-webkit-touch-callout:none}
+@media (max-width:780px){
+  h1{font-size:26px}
+  .lede{font-size:15px}
+  .stage{grid-template-columns:minmax(0,1fr);gap:14px;margin-top:18px}
+  .stage>.panel{display:contents}
+  .navbar{order:1;position:sticky;top:env(safe-area-inset-top,0px);z-index:6;background:var(--bg);gap:10px;
+    margin-left:calc(-1 * max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)));
+    padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:8px 10px;
+    border-bottom:1px solid var(--line)}
+  .navbar .tabs{justify-self:stretch;display:grid;grid-template-columns:1fr 1fr}
+  .navbar .tabs button{padding:9px 10px}
+  .meter-wrap{order:2;position:static}
+  #pane-dev,#pane-how{order:3}
+  #meter{height:min(58vh,560px);width:auto;max-width:100%;max-height:none}
+  .picker,#scenchips{display:flex;flex-wrap:nowrap;overflow-x:auto;position:relative;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
+    -webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent);padding-right:28px}
+  .picker::-webkit-scrollbar,#scenchips::-webkit-scrollbar{display:none}
+  .picker{gap:14px}
+  .picker .group{display:flex;flex:none;gap:6px;align-items:center}
+  .picker .group+.group{border-left:1px solid var(--line);padding-left:14px}
+  .picker .glabel,#scenwrap .glabel{display:none}
+  .picker .chips{flex-wrap:nowrap}
+  .navbar .chip{white-space:nowrap;padding:8px 13px;flex:none}
+  .ref{grid-template-columns:minmax(0,1fr)}
+  .card{padding:18px}
+}
+@media (prefers-reduced-motion:reduce){ #screen{transition:none} }
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header>
+    <div class="stripe" aria-hidden="true"></div>
+    <div class="kicker">Dnipro-M · SM600 · 9999 відліків · TrueRMS · CAT III 600 V</div>
+    <h1>Як користуватися мультиметром SM600</h1>
+    <p class="lede">Натискайте на перемикач, кнопки, екран і гнізда прямо на схемі: прилад поверне ручку, покаже приклад на екрані й підкаже, куди вставити щупи. Кожна функція приладу винесена окремою кнопкою праворуч, а у вкладці «Як виміряти» зібрані готові сценарії для дому й авто.</p>
+  </header>
+
+  <section class="stage">
+    <div class="meter-wrap">
+      <svg id="meter" viewBox="0 -26 360 816" aria-label="Схема мультиметра Dnipro-M SM600">
+        <polygon id="beam" class="beam" points="293,2 307,2 336,-26 264,-26" hidden></polygon>
+        <rect class="sv-bump" x="8" y="0" width="344" height="712" rx="36"></rect>
+        <rect class="sv-body" x="22" y="14" width="316" height="684" rx="24"></rect>
+        <circle class="lens" cx="300" cy="6" r="6"></circle>
+
+        <g class="hot" data-pick="btn:ncv" tabindex="0" role="button" aria-label="Датчик NCV та індикатор у верхньому торці">
+          <rect class="zone" x="120" y="14" width="120" height="20" rx="6"></rect>
+          <circle id="led" class="led" cx="148" cy="24" r="4"></circle>
+          <path class="icof" d="M160,28 L166,19 L172,28 Z"></path>
+          <text class="sv-t" x="194" y="27">NCV</text>
+        </g>
+
+        <g class="hot" data-pick="lcd:lcd" tabindex="0" role="button" aria-label="Екран">
+          <rect class="bezel" x="30" y="36" width="300" height="138" rx="12"></rect>
+          <rect id="screen" x="38" y="44" width="284" height="122" rx="6"></rect>
+          <rect id="screenframe" x="31" y="37" width="298" height="136" rx="12"></rect>
+          <text class="ann" id="a-auto" x="48" y="60">AUTO</text>
+          <text class="ann" id="a-hold" x="86" y="60">HOLD</text>
+          <text class="ann" id="a-beep" x="124" y="60">·)))</text>
+          <path class="ann" id="a-diode" d="M156,52 L164,56 L156,60 Z M164,52 h2 v8 h-2 Z"></path>
+          <text class="ann" id="a-ncv" x="176" y="60">NCV</text>
+          <text class="ann" id="a-live" x="206" y="60">LIVE</text>
+          <path class="ann" id="a-hv" d="M256,48 L250,58 L254,58 L251,66 L259,55 L255,55 Z"></path><g id="a-apo" class="annico"><circle cx="304" cy="55" r="6"></circle><path d="M304,50 V55"></path></g>
+          <text class="ann" id="a-ac" x="46" y="104">AC</text>
+          <text class="ann" id="a-dc" x="46" y="122">DC</text>
+          <g id="digits" transform="skewX(-6)"></g>
+          <text class="unit" id="unit" x="314" y="160"></text>
+        </g>
+
+        <text class="sv-brand" x="34" y="194">DNIPRO-M</text>
+        <text class="sv-model" x="326" y="194">SM600</text>
+
+        <g class="hot btn" data-pick="btn:sel" tabindex="0" role="button" aria-label="Кнопка SEL">
+          <rect class="cap red" x="30" y="206" width="66" height="34" rx="8"></rect>
+          <text class="bt" x="63" y="228">SEL</text>
+        </g>
+        <g class="hot btn" data-pick="btn:ncv" data-hold="ncv" tabindex="0" role="button" aria-label="Кнопка NCV, працює, поки натиснута">
+          <rect class="cap" x="108" y="206" width="66" height="34" rx="8"></rect>
+          <text class="bt" x="141" y="228">NCV</text>
+        </g>
+        <g class="hot btn" data-pick="btn:hz" data-long="1" tabindex="0" role="button" aria-label="Кнопка Hz, утримання — ліхтар">
+          <rect class="cap" x="186" y="206" width="66" height="34" rx="8"></rect>
+          <text class="bt" x="212" y="228">Hz</text>
+          <path class="ico" d="M231,215 h8 l-2,5 v9 h-4 v-9 z"></path>
+        </g>
+        <g class="hot btn" data-pick="btn:hold" data-long="1" tabindex="0" role="button" aria-label="Кнопка HOLD, утримання — підсвічування">
+          <rect class="cap" x="264" y="206" width="66" height="34" rx="8"></rect>
+          <text class="bt" x="297" y="225">HOLD</text>
+          <path class="ico" d="M297,231 v0.1 M292,233 h10" style="stroke-width:1.4"></path>
+        </g>
+
+        <g id="dial"></g>
+        <text class="sv-t2" x="180" y="572">AUTO RANGE</text>
+
+        <g id="jacks"></g>
+        <g id="wires"></g>
+      </svg>
+      <p class="hint">NCV працює, поки тримаєте кнопку · Hz і HOLD можна утримувати (≈2 с)</p>
+    </div>
+
+    <div class="panel">
+      <div class="navbar" id="navbar">
+        <div class="tabs" role="tablist" aria-label="Розділи">
+          <button role="tab" id="tab-dev" aria-selected="true" aria-controls="pane-dev">Прилад</button>
+          <button role="tab" id="tab-how" aria-selected="false" aria-controls="pane-how">Як виміряти</button>
+        </div>
+        <div class="picker" id="picker"></div>
+        <div class="group" id="scenwrap" hidden><div class="glabel">Що потрібно виміряти</div><div class="chips" id="scenchips"></div></div>
+      </div>
+
+      <div id="pane-dev" role="tabpanel" aria-labelledby="tab-dev" class="panel">
+        <article class="card" id="info" aria-live="polite"></article>
+      </div>
+
+      <div id="pane-how" role="tabpanel" aria-labelledby="tab-how" class="panel" hidden>
+        <article class="card" id="scen" aria-live="polite"></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="ref">
+    <div class="card">
+      <h2>Безпека</h2>
+      <ul>
+        <li>Перед кожним виміром напруги дивіться на перемикач і гніздо червоного щупа. Найчастіша аварія: щуп залишився в гнізді A, а ви тикаєте ним у розетку.</li>
+        <li>CAT III 600 V розрахований на розетки, щитки й проводку всередині будинку. Ввід у будинок і повітряні лінії належать до CAT IV, їх цим приладом не вимірюють.</li>
+        <li>Повертайте перемикач, лише коли щупи нічого не торкаються.</li>
+        <li>Опір, продзвонювання, діоди, ємність і батарейки вимірюють лише без зовнішньої напруги: захист цих режимів за паспортом 250 В.</li>
+        <li>Струм не вимірюють у колах, де напруга вища за 250 В.</li>
+        <li>Будьте особливо обережні з напругою понад 60 В постійного або 30 В змінного струму: вона вже небезпечна для життя.</li>
+        <li>Корпус IP20: від вологи не захищений. Не вимірюйте під дощем і в сирості, а після морозу дайте приладу зігрітися й висохнути від конденсату.</li>
+        <li>Тримайте пальці за обмежувачами на щупах. Тріснуті щупи й дроти замінюйте.</li>
+        <li>Перед роботою з проводкою перевірте прилад на свідомо робочій розетці, потім перевірте вимкнену лінію, потім знову робочу розетку.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Значки на екрані</h2>
+      <dl class="gl" id="gloss"></dl>
+    </div>
+  </section>
+
+  <p class="foot">Неофіційна шпаргалка, не пов'язана з Dnipro-M. Функції, межі й точність звірені з офіційною інструкцією Dnipro-M до SM600 (арт. 21267000). Живлення 2×AAA, автовимкнення через 15 хвилин бездіяльності, запобіжники 630 мА і 10 А (250 В, 5×20 мм). У комплекті: щупи, 2 батарейки AAA, захисний чохол і 2 запасні запобіжники. Паспортна точність гарантується при 18–28 °C і вологості до 80%.</p>
+</div>
+
+<script>
+(function(){
+const NS='http://www.w3.org/2000/svg';
+const cx=180, cy=422, R=124;
+
+const MODES={
+  smart:{angle:-66,chip:'SMART',short:'SMART',jack:'v',auto:true,
+    subs:[{txt:'230.4',acdc:'AC',unit:'V',fl:['hv']}],
+    title:'SMART: прилад сам обирає, що вимірювати',
+    what:'Червоний сектор на перемикачі. Ви просто торкаєтеся щупами, а мультиметр сам визначає, що на них: змінна чи постійна напруга або опір. Діапазон і рід струму обираються автоматично.',
+    spec:'<b>V</b> AC/DC до 600 В · <b>Ω</b> до 6 кОм · точність нижча, ніж у ручних режимах: AC ±(3%+7), DC ±(0,5%+4), Ω ±(1,2%+5)',
+    steps:['Чорний щуп вставте в COM, червоний у VΩmA (над ним напис SMART Live).','Поверніть перемикач у червоний сектор SMART.','Торкніться щупами двох точок. Є напруга: екран покаже V і підпише AC або DC.','Напруги немає: прилад покаже опір.'],
+    note:['tip','Для точних вимірів, великих опорів, ємності, струму й батарейок використовуйте окремі положення перемикача.']},
+  live:{angle:-44,chip:'Live',short:'Live',jack:'v',
+    subs:[{txt:'LIVE',unit:'',fl:['live']}],
+    title:'Live: пошук фази одним щупом',
+    what:'Показує, на якому дроті фаза. Потрібен лише червоний щуп: прилад реагує на різницю потенціалів між фазою і вашим тілом.',
+    spec:'Фаза: на екрані <b>LIVE</b>, загоряється червоний індикатор угорі, лунає сигнал',
+    steps:['Червоний щуп у VΩmA. Чорний можна залишити в COM, але ним нічого не торкайтеся.','Поверніть перемикач на Live.','Тримайте мультиметр у руці й торкніться червоним щупом контакту розетки або жили дроту.','Фаза: LIVE на екрані, червоний індикатор і звук. Нуль або земля: нічого не відбувається.'],
+    note:['warn','Це непряма перевірка. Перш ніж братися за дроти руками, підтвердьте відсутність напруги звичайним виміром у режимі V.']},
+  v:{angle:-22,chip:'V',short:'V',jack:'v',auto:true,
+    subs:[{txt:'12.68',acdc:'DC',unit:'V',fl:[]},{txt:'230.4',acdc:'AC',unit:'V',fl:['hv']}],fns:['vdc','vac','hz'],
+    title:'V: напруга',
+    what:'У цьому положенні три функції: постійна напруга, змінна напруга і частота. За замовчуванням прилад вимірює DC, кнопка SEL перемикає на AC, частота вмикається кнопкою Hz.',
+    spec:'<b>До 600 В</b> · автодіапазон: 999,9 мВ · 9,999 В · 99,99 В · 600 В',
+    steps:[],note:null},
+  off:{angle:0,chip:'OFF',short:'OFF',jack:null,subs:[{txt:'',unit:'',fl:[]}],
+    title:'OFF: вимкнено',
+    what:'Ставте сюди після роботи, так батарейки прослужать довше. Якщо забули, прилад сам вимкнеться через 15 хвилин бездіяльності. Увімкнути його знову можна кнопкою SEL або поворотом перемикача.',
+    spec:'Живлення <b>2 × AAA 1,5 В</b>',
+    steps:[],
+    note:['tip','Батарейки (2 × AAA, у комплекті) ставляться так: зніміть захисний чохол, підніміть підставку й відкрутіть гвинт батарейного відсіку. Міняйте їх, щойно на екрані з\'явиться значок батареї: із розрядженими прилад може показувати неправильно. Якщо довго не користуєтеся, вийміть батарейки.']},
+  diode:{angle:22,chip:'Діод · продзвонювання',short:'діод/продзвонювання',jack:'v',
+    subs:[{txt:'0.583',unit:'V',fl:['diode']},{txt:'0.3',unit:'Ω',fl:['beep']}],fns:['diode','cont'],
+    title:'Діод і продзвонювання',
+    what:'Інструкція називає це положення «діодне продзвонювання»: тут перевіряють діоди (на екрані спад напруги) і продзвонюють коло зі звуком. Значок режиму видно на екрані; якщо при зімкнених щупах немає звуку, натисніть SEL.',
+    spec:'Лише на знеструмленому колі · захист 250 В',
+    steps:[],note:null},
+  res:{angle:44,chip:'Ω · ємність',short:'Ω/ємність',jack:'v',auto:true,
+    subs:[{txt:'4.700',unit:'kΩ',fl:[]},{txt:'100.0',unit:'µF',fl:[]}],fns:['ohm','cap'],
+    title:'Ω і ємність',
+    what:'Дві функції в одному положенні: опір і ємність конденсаторів. Перемикаються кнопкою SEL, одиниці на екрані підкажуть режим (Ω або F).',
+    spec:'Лише на знеструмленому колі · захист 250 В',
+    steps:[],note:null},
+  bat:{angle:66,chip:'Батарейка',short:'батарейка',jack:'v',
+    subs:[{txt:'1.523',acdc:'DC',unit:'V',fl:[]}],
+    title:'Тест батарейок 1,5 В і 9 В',
+    what:'Прилад трохи навантажує батарейку й вимірює напругу. Це чесніше за режим V: розряджена батарейка без навантаження може показати майже норму.',
+    spec:'Діапазони <b>1,5 В</b> (AA, AAA, C, D) і <b>9 В</b> (крона) · роздільність 0,001 В',
+    steps:['Чорний щуп у COM, червоний у VΩmA, перемикач на значок батарейки.','Червоний щуп на плюс, чорний на мінус.','AA і AAA: понад 1,45 В свіжа, 1,2–1,4 В підсіла, нижче 1,2 В час міняти. Крона: понад 8,4 В добра, нижче 7,2 В на заміну.'],
+    note:['tip','Акумулятор автомобіля перевіряйте в режимі V, а не тут.']},
+  ma:{angle:88,chip:'Струм mA',short:'mA',jack:'v',auto:true,
+    subs:[{txt:'245.3',acdc:'DC',unit:'mA',fl:[]},{txt:'85.40',acdc:'AC',unit:'mA',fl:[]}],subNames:['DC','AC'],
+    title:'mA: струм до 600 мА',
+    what:'Малі струми, змінні й постійні: споживання плати, світлодіодів, датчика, пристрою в режимі очікування, струм витоку в авто.',
+    spec:'<b>До 600 мА</b> · роздільність 0,1 мА · DC ±(0,8%+3), AC ±(1%+3) · запобіжник 630 мА',
+    steps:['Знеструмте коло й розірвіть його в одному місці.','Чорний щуп у COM, червоний у VΩmA, перемикач на mA.','За замовчуванням DC, кнопка SEL перемикає на AC.','Під\'єднайте щупи до двох кінців розриву, щоб струм ішов через прилад. Подайте живлення.','Якщо струм може бути більшим за 600 мА, починайте з положення A і гнізда 10A.'],
+    note:['warn','У режимі струму не торкайтеся щупами розетки чи клем акумулятора напряму. Це коротке замикання через прилад. Струм у колах понад 250 В не вимірюйте.']},
+  a:{angle:110,chip:'Струм 10 A',short:'A',jack:'a',auto:true,
+    subs:[{txt:'2.42',acdc:'DC',unit:'A',fl:[]},{txt:'6.12',acdc:'AC',unit:'A',fl:[]}],subNames:['DC','AC'],
+    title:'A: струм до 10 А',
+    what:'Великі струми через окреме гніздо A: споживання обігрівача, чайника, потужного навантаження на 12 В.',
+    spec:'<b>До 10 А</b> · роздільність 10 мА · DC ±(1,2%+3), AC ±(1,5%+3) · запобіжник 10 А',
+    steps:['Знеструмте коло й розірвіть його.','Червоний щуп переставте в гніздо A (10A), чорний залиште в COM.','Перемикач на A. За замовчуванням DC, кнопка SEL перемикає на AC.','Під\'єднайте прилад у розрив послідовно, подайте живлення.','Після виміру одразу поверніть червоний щуп у VΩmA.'],
+    note:['warn','За паспортом: при струмі понад 5 А вимірювати не довше 15 секунд, потім пауза 1 хвилина. Червоний щуп, забутий у гнізді A, під час наступного виміру напруги влаштує коротке замикання.']}
+};
+const ORDER=['smart','live','v','off','diode','res','bat','ma','a'];
+
+/* Individual functions (what is hidden behind SEL / Hz gets its own card) */
+const FN={
+  vac:{chip:'V AC',mode:'v',sub:1,title:'Змінна напруга (V AC)',
+    what:'Розетки, проводка, подовжувачі, вихід трансформатора. Прилад TrueRMS: правильно вимірює і «криву» напругу від генератора чи інвертора, а не лише чисту синусоїду.',
+    spec:'<b>До 600 В</b> · TrueRMS 50–400 Гц · ±(0,8%+3), на межі 600 В ±(1%+5)',
+    steps:['Чорний щуп у COM, червоний у VΩmA.','Поверніть перемикач на V.','Натисніть SEL, щоб перемкнутися з DC (за замовчуванням) на AC: напис AC з\'явиться ліворуч на екрані.','Торкніться щупами двох точок (у розетці: обидва отвори). Полярність не важлива.'],
+    note:['tip','Норма в мережі 207–253 В (230 В ±10%).']},
+  vdc:{chip:'V DC',mode:'v',sub:0,title:'Постійна напруга (V DC)',
+    what:'Батарейки, акумулятори, блоки живлення, бортова мережа авто, сонячні панелі, павербанки.',
+    spec:'<b>До 600 В</b> · ±(0,5%+3) · роздільність до 1 мВ',
+    steps:['Чорний щуп у COM, червоний у VΩmA.','Поверніть перемикач на V.','За замовчуванням прилад уже в DC. Якщо ліворуч на екрані AC, натисніть SEL.','Червоний щуп на плюс, чорний на мінус.'],
+    note:['tip','Мінус перед числом означає, що щупи переплутані місцями. Приладу це не шкодить.']},
+  hz:{chip:'Частота Hz',mode:'v',sub:1,freq:true,title:'Частота (Hz)',
+    what:'Частота змінної напруги. У мережі має бути близько 50 Гц; перевірка корисна для генератора чи інвертора.',
+    spec:'Працює в положенні <b>V</b>, режим AC',
+    steps:['Під\'єднайте щупи як для V AC: чорний у COM, червоний у VΩmA.','Перемикач на V, кнопкою SEL перемкніть на AC.','Торкніться щупами точок виміру.','Коротко натисніть Hz. Повторне натискання поверне показ вольт.'],
+    note:['tip','Утримання цієї ж кнопки близько 2 секунд вмикає ліхтар.']},
+  diode:{chip:'Діод',mode:'diode',sub:0,title:'Перевірка діодів',
+    what:'Показує прямий спад напруги на p-n переході. Так перевіряють діоди, діодні мости, переходи транзисторів, більшість світлодіодів.',
+    spec:'Показує <b>0,15–2,5 В</b> · тестовий струм ≈1 мА · напруга на щупах ≈2,5 В',
+    steps:['Знеструмте схему.','Чорний щуп у COM, червоний у VΩmA, перемикач на значок діода.','На екрані має бути значок діода. Якщо його немає, натисніть SEL.','Червоний на анод, чорний на катод (бік зі смужкою).','Поміняйте щупи місцями: має бути OL.'],
+    note:['tip','Кремнієвий діод 0,5–0,7 В, Шотткі 0,2–0,4 В, червоний чи зелений світлодіод 1,8–2,2 В. Білий і синій світлодіоди (близько 3 В) прилад не відкриє й покаже OL, це не означає, що вони несправні.']},
+  cont:{chip:'Продзвонювання',mode:'diode',sub:1,title:'Продзвонювання зі звуком',
+    what:'Прилад пищить, якщо коло замкнене. Так перевіряють дроти, кабелі, запобіжники, вимикачі, обмотки.',
+    spec:'Безперервний звук при <b>≤30 Ом</b> · напруга на щупах ≈1 В',
+    steps:['Знеструмте те, що перевіряєте.','Чорний щуп у COM, червоний у VΩmA, перемикач на значок діода.','Зімкніть щупи: прилад має пищати. Якщо мовчить, натисніть SEL, щоб з\'явився значок ·))).','Щупи на два кінці дроту. Звук означає цілий, OL і тиша означають обрив.'],
+    note:null},
+  ohm:{chip:'Опір Ω',mode:'res',sub:0,title:'Опір (Ω)',
+    what:'Резистори, ТЕНи, обмотки двигунів і трансформаторів, датчики температури, нагрівальний кабель теплої підлоги.',
+    spec:'<b>До 60 МОм</b> · автодіапазон · ±(0,8%+3), на 60 МОм ±(1,5%+10)',
+    steps:['Знеструмте схему, конденсатори розрядіть.','Чорний щуп у COM, червоний у VΩmA, перемикач на Ω.','Опір увімкнений за замовчуванням (одиниці Ω, kΩ, MΩ на екрані); SEL перемикає на ємність.','Торкніться виводів деталі. Не тримайте обидва виводи пальцями, тіло додасть свій опір.','OL означає обрив або опір, більший за межу.'],
+    note:['tip','Перед точним виміром малих опорів зімкніть щупи. Покаже 0,1–0,3 Ω: це опір самих дротів, його віднімайте.']},
+  cap:{chip:'Ємність',mode:'res',sub:1,title:'Ємність конденсаторів',
+    what:'Пускові конденсатори насосів, кондиціонерів і компресорів, електроліти в блоках живлення.',
+    spec:'<b>До 10 мФ</b> (10 000 мкФ) · автодіапазон від 100 нФ · ±(3,5%+15)',
+    steps:['Знеструмте пристрій і розрядіть конденсатор: за інструкцією замкніть його виводи, а високовольтні розряджайте через резистор (1–10 кОм).','Від\'єднайте від схеми хоча б один вивід.','Перемикач на Ω, кнопкою SEL оберіть ємність (одиниці nF, µF, mF).','Щупи на виводи, в електролітичних червоний на плюс. Зачекайте, поки число встановиться: великі ємності вимірюються кілька секунд.'],
+    note:['warn','Конденсатори в блоках живлення й мікрохвильовках тримають небезпечний заряд після вимкнення. Не вимірюйте заряджений конденсатор: захист режиму 250 В.']}
+};
+
+const BTNS={
+  sel:{chip:'SEL',title:'SEL: вибір підрежиму',
+    what:'Перемикає функції всередині одного положення перемикача: AC і DC для V, mA та A; опір і ємність; діод і продзвонювання. Також SEL вмикає прилад після автовимкнення.',
+    note:['tip','Дивіться на екран після натискання: напис AC/DC, одиниця виміру чи значок режиму підтвердять вибір.']},
+  ncv:{chip:'NCV',title:'NCV: напруга без дотику',
+    what:'Датчик у верхньому торці приладу відчуває змінне поле дроту під напругою. Нічого не треба розкривати чи торкатися. Режим працює, лише поки кнопка NCV натиснута: тримайте її весь час пошуку, відпустили — прилад повернувся до звичайного виміру.',
+    hold:true,
+    spec:'Слабке поле: на екрані <b>L</b> · сильне: <b>H</b> · плюс світловий і звуковий сигнал',
+    steps:['Увімкніть прилад у будь-якому положенні перемикача.','Натисніть NCV і не відпускайте.','Не відпускаючи кнопку, піднесіть верхній торець (мітка NCV) до дроту, розетки, вимикача або ведіть уздовж стіни на відстані 1–2 см.','Ближче до фази сигнал сильніший: L змінюється на H.','Відпустіть кнопку — режим NCV вимкнеться.'],
+    note:['warn','NCV не бачить постійну напругу й екранований кабель. Тиша ще не означає, що дріт безпечний.']},
+  hz:{chip:'Hz · ліхтар',title:'Hz і ліхтар',
+    what:'Коротке натискання в положенні V (режим AC) показує частоту змінної напруги. Утримання близько 2 секунд вмикає й вимикає ліхтар у верхньому торці, зручно в щитку.',
+    acts:[['hz-short','Натиснути: частота'],['hz-long','Утримати: ліхтар']]},
+  hold:{chip:'HOLD · підсвічування',title:'HOLD і підсвічування',
+    what:'Коротке натискання фіксує показ, на екрані загоряється HOLD. Повторне натискання відпускає. Утримання близько 2 секунд вмикає підсвічування екрана, повторне натискання вимикає.',
+    acts:[['hold-short','Натиснути: HOLD'],['hold-long','Утримати: підсвічування']],
+    note:['tip','Не забувайте відпускати HOLD: зафіксоване число легко сплутати з поточним.']}
+};
+const JACKS={
+  a:{x:80,label:'A',sub:'10A · FUSED',chip:'A (10A)',title:'Гніздо A: струм до 10 А',
+    what:'Сюди червоний щуп ставлять лише для виміру великих струмів, у положенні A. Усередині власний запобіжник 10 А / 250 В.',
+    note:['warn','Щуп у цьому гнізді плюс дотик до розетки дорівнює коротке замикання. Після виміру струму одразу повертайте щуп у VΩmA. Якщо в режимі струму прилад показує 0 або на екрані FUSE, згорів запобіжник: два запасні є в комплекті, міняються під задньою кришкою (4 гвинти), 630 мА для гнізда mA і 10 А для гнізда A.']},
+  com:{x:180,label:'COM',sub:'CAT III 600V',chip:'COM',title:'Гніздо COM: загальне',
+    what:'Сюди завжди вставляється чорний щуп, у всіх режимах без винятку.'},
+  v:{x:280,label:'VΩmA',sub:'600mA · FUSED',top:'SMART Live',chip:'VΩmA',title:'Гніздо VΩmA: основне',
+    what:'Червоний щуп для всього, крім великих струмів: SMART, Live, напруга, опір, продзвонювання, діоди, ємність, батарейки й струми до 600 мА. Захищене запобіжником (для заміни за паспортом 630 мА / 250 В).',
+    note:['tip','Маркування CAT III 600 V біля гнізда означає: можна вимірювати в розетках, щитках і стаціонарній проводці будинку.']}
+};
+const GLOSS=[
+  ['OL','поза діапазоном або обрив кола'],
+  ['AC / DC','змінна / постійна'],
+  ['AUTO','діапазон обирається автоматично'],
+  ['HOLD','показ зафіксовано'],
+  ['LIVE','знайдено фазу (режим Live)'],
+  ['NCV · L / H','безконтактний пошук: слабке / сильне поле'],
+  ['FUSE · —/—','згорів запобіжник приладу'],
+  ['⚡','попередження: небезпечна напруга на щупах'],
+  ['значок ⏻ з годинником','увімкнено автовимкнення (через 15 хв бездіяльності)'],
+  ['m','мілі, тисячна: 245 mA = 0,245 A'],
+  ['µ · n','мікро, мільйонна · нано, мільярдна: 100 µF, 47 nF'],
+  ['k · M','кіло ×1000, мега ×1 000 000: 4,7 kΩ = 4700 Ω'],
+  ['−12.6','мінус у DC: щупи переплутані місцями'],
+  ['значок батареї','розрядилися батарейки AAA самого мультиметра']
+];
+const LCDINFO={title:'Екран на 9999 відліків',
+  what:'Чотири розряди, максимум 9999, оновлення 3 рази на секунду. Тому напругу в мережі прилад покаже як 230.4, а пальчикову батарейку як 1.523: на знак точніше, ніж у простих приладів на 2000 відліків.'};
+
+/* Function list in picker: [label, focusKey, apply] */
+const FLIST=[
+  ['SMART','mode:smart',()=>setMode('smart',0)],
+  ['Live (фаза)','mode:live',()=>setMode('live',0)],
+  ['V AC','fn:vac'],['V DC','fn:vdc'],['Частота Hz','fn:hz'],
+  ['Продзвонювання','fn:cont'],['Діод','fn:diode'],
+  ['Опір Ω','fn:ohm'],['Ємність','fn:cap'],
+  ['Батарейки 1,5/9 В','mode:bat',()=>setMode('bat',0)],
+  ['Струм mA','mode:ma',()=>setMode('ma',0)],
+  ['Струм 10 A','mode:a',()=>setMode('a',0)],
+  ['NCV','btn:ncv',()=>{if(S.mode==='off')setMode('smart',0);else resetMeasure()}],
+  ['OFF','mode:off',()=>setMode('off',0)]
+];
+
+const SCEN=[
+  {id:'socket',chip:'Розетка 230 В',mode:'v',sub:1,title:'Напруга в розетці',
+    steps:['Чорний щуп у COM, червоний у VΩmA.','Перемикач на V, кнопкою SEL перемкніть із DC на AC (або просто поставте SMART).','Вставте щупи в обидва отвори розетки, полярність не важлива.','Натисніть Hz, якщо потрібна частота мережі.'],
+    result:'Норма: 207–253 В (230 В ±10%). Частота близько 50 Hz.',
+    warn:'Тримайте щупи за обмежувачі, пальці не торкаються металу.'},
+  {id:'carbat',chip:'Акумулятор авто',mode:'v',sub:0,lcd:{txt:'12.68',acdc:'DC',unit:'V'},title:'Акумулятор автомобіля',
+    steps:['Чорний у COM, червоний у VΩmA, перемикач на V (за замовчуванням уже DC).','Червоний щуп на плюсову клему, чорний на мінусову.','Вимірюйте після стоянки від 2 годин, без увімкнених споживачів.','Заведіть двигун і виміряйте ще раз, щоб перевірити генератор.'],
+    result:'12,6–12,7 В заряджений · 12,4 В близько 75% · 12,2 В близько половини · нижче 12,0 В розряджений. На заведеному двигуні 13,8–14,5 В.'},
+  {id:'aa',chip:'Батарейка AA / крона',mode:'bat',sub:0,title:'Пальчикова батарейка або крона',
+    steps:['Чорний у COM, червоний у VΩmA, перемикач на значок батарейки.','Червоний на плюс, чорний на мінус.'],
+    result:'AA/AAA: понад 1,45 В свіжа · 1,2–1,4 В підсіла · нижче 1,2 В на заміну. Крона 9 В: понад 8,4 В добра · нижче 7,2 В на заміну.'},
+  {id:'wire',chip:'Продзвонити дріт',mode:'diode',sub:1,title:'Дріт, кабель або запобіжник',
+    steps:['Знеструмте й від\'єднайте те, що перевіряєте, з обох боків.','Чорний у COM, червоний у VΩmA, перемикач на значок діода.','Зімкніть щупи: має бути звук. Якщо тиша, натисніть SEL до значка ·))).','Щупи на два кінці однієї жили. Потім перевірте сусідні жили між собою.'],
+    result:'Звук (до 30 Ом): жила ціла. OL між різними жилами: замикання немає. Звук між різними жилами: десь замикання.'},
+  {id:'ten',chip:'ТЕН бойлера',mode:'res',sub:0,lcd:{txt:'26.45',unit:'Ω'},title:'Опір ТЕНа',
+    steps:['Від\'єднайте бойлер або пральну машину від мережі, зніміть дроти з виводів ТЕНа.','Чорний у COM, червоний у VΩmA, перемикач на Ω.','Щупи на два виводи ТЕНа.','Пробій на корпус: один щуп на вивід, другий на металевий фланець.'],
+    result:'Очікуване: 230² ÷ потужність. Для 2000 Вт: 52 900 ÷ 2000 ≈ 26 Ω. OL: спіраль обірвана. Близько 0: замикання. Між виводом і корпусом має бути OL.'},
+  {id:'phase',chip:'Знайти фазу',mode:'live',sub:0,title:'Де фаза в розетці чи дроті',
+    steps:['Червоний щуп у VΩmA, перемикач на Live.','Тримайте прилад у руці.','Торкніться червоним щупом спочатку одного контакту, потім іншого.'],
+    result:'LIVE на екрані, червоний індикатор і звук: фаза. Тиша: нуль.',
+    warn:'Підтвердьте результат виміром у режимі V перед роботою з дротами.'},
+  {id:'hidden',chip:'Прихована проводка',mode:'smart',sub:0,title:'Дріт під напругою в стіні',
+    steps:['Увімкніть прилад, наприклад у SMART. Щупи не потрібні.','Натисніть NCV і тримайте кнопку весь час пошуку.','Не відпускаючи кнопку, ведіть верхнім торцем уздовж стіни на відстані 1–2 см від поверхні, повільно.','Позначте місця, де на екрані H і сигнал сильніший.'],
+    result:'Проводка без навантаження теж випромінює, якщо на ній фаза. Вимкнену автоматом лінію NCV не побачить.',
+    warn:'Перед свердлінням усе одно вимикайте автомат: NCV не гарантує точне положення кабелю.'},
+  {id:'current',chip:'Струм споживання',mode:'ma',sub:0,title:'Струм споживання пристрою на 5–12 В',
+    steps:['Вимкніть живлення й розірвіть плюсовий дріт.','Якщо очікуєте понад 600 мА: червоний щуп у гніздо A, перемикач на A. Інакше: червоний у VΩmA, перемикач на mA.','Режим DC увімкнений за замовчуванням.','Червоний щуп до дроту від джерела, чорний до дроту до пристрою. Увімкніть живлення.'],
+    result:'Потужність = напруга × струм. Наприклад, 12 В × 0,245 A ≈ 2,9 Вт.',
+    warn:'У режимі струму ніколи не прикладайте щупи прямо до клем джерела. Понад 5 А вимірювати не довше 15 секунд.'},
+  {id:'cap',chip:'Конденсатор',mode:'res',sub:1,title:'Ємність конденсатора',
+    steps:['Знеструмте пристрій і розрядіть конденсатор: замкніть виводи, а високовольтний (у блоках живлення, кондиціонерах) розряджайте через резистор 1–10 кОм.','Випаяйте або від\'єднайте хоча б один вивід.','Перемикач на Ω, натискайте SEL до появи одиниць F (nF, µF).','Щупи на виводи, в електролітичних червоний на плюс. Зачекайте, поки число встановиться.'],
+    result:'Порівняйте з номіналом на корпусі. Пускові конденсатори компресорів і насосів зазвичай мають допуск ±5%, електроліти ±20%.',
+    warn:'Конденсатори в блоках живлення й мікрохвильовках тримають небезпечний заряд після вимкнення.'},
+  {id:'led',chip:'Діод / світлодіод',mode:'diode',sub:0,title:'Діод або світлодіод',
+    steps:['Перемикач на значок діода (якщо на екрані немає значка діода, натисніть SEL).','Червоний щуп на анод (у світлодіода довга ніжка), чорний на катод.','Поміняйте щупи місцями.'],
+    result:'Кремнієвий діод 0,5–0,7 В, Шотткі 0,2–0,4 В, червоний/зелений світлодіод 1,8–2,2 В. У зворотний бік OL. OL в обидва боки: обрив. Близько 0 в обидва: пробитий. Білі й сині світлодіоди (≈3 В) прилад не відкриє: покаже OL, хоча світлодіод справний.'}
+];
+
+const S={mode:'smart',sub:0,hold:false,frozen:null,light:false,back:false,ncv:false,freq:false,override:null,focus:'mode:smart',tab:'dev',scen:'socket'};
+
+/* ---------- build SVG ---------- */
+function el(tag,attrs,html){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(html)e.innerHTML=html;return e}
+function pol(a,r){const t=a*Math.PI/180;return[cx+r*Math.sin(t),cy-r*Math.cos(t)]}
+function f(n){return n.toFixed(1)}
+function ACDC(c){return `<path class="${c}" style="stroke-width:1.2" d="M-7,-2 c1.5,-2.6 3,-2.6 4.5,0 s3,2.6 4.5,0 s2,-2 2.5,-1.3 M-7,2 H7 M-7,5 H-3.5 M-1.5,5 H2 M4,5 H7"></path>`}
+const LBL={
+  live:'<path class="bolt" d="M2,-20 L-4,-10 L0,-10 L-2,-3 L5,-13 L1,-13 Z"></path><text class="dl" y="9">Live</text>',
+  v:'<g transform="translate(0,-11)">'+ACDC('ico')+'</g><text class="dl big" y="11">V</text>',
+  off:'<text class="dl" y="4">OFF</text>',
+  diode:'<path class="ico" d="M-21,0 H-15 M-7,-6 V6 M-7,0 H-3"></path><path class="icof" d="M-15,-6 L-7,0 L-15,6 Z"></path><text class="dl" x="0" y="4" style="text-anchor:start">·)))</text>',
+  res:'<path class="ico" d="M-10,-9 H-2 M-2,-15 V-3 M2,-15 V-3 M2,-9 H10"></path><text class="dl big" y="12">Ω</text>',
+  bat:'<rect class="icor" x="-12" y="-7" width="21" height="14" rx="2"></rect><rect class="icof" x="9" y="-3" width="3" height="6"></rect><path class="ico" d="M-8,0 H-4 M1,0 H5 M3,-2 V2"></path>',
+  ma:'<g transform="translate(0,-11)">'+ACDC('ico')+'</g><text class="dl" y="10">mA</text>',
+  a:'<g transform="translate(0,-11)">'+ACDC('ico')+'</g><text class="dl big" y="11">A</text>'
+};
+const dial=document.getElementById('dial');
+(function(){
+  const r1=104,r2=146;
+  /* outer ring line */
+  const [ox1,oy1]=pol(-122,r2),[ox2,oy2]=pol(122,r2);
+  let h=`<path class="sv-ring" d="M${f(ox1)},${f(oy1)} A${r2},${r2} 0 1 1 ${f(ox2)},${f(oy2)}"></path>`;
+  /* red dividers between positions, like on the body */
+  [-122,-55,-33,-11,11,33,55,77,99,122].forEach(a=>{const[x1,y1]=pol(a,r1),[x2,y2]=pol(a,r2);h+=`<line class="sv-div" x1="${f(x1)}" y1="${f(y1)}" x2="${f(x2)}" y2="${f(y2)}"></line>`});
+  /* bottom AUTO RANGE arc */
+  const [bx1,by1]=pol(138,128),[bx2,by2]=pol(222,128);
+  h+=`<path class="sv-arc" d="M${f(bx1)},${f(by1)} A128,128 0 0 1 ${f(bx2)},${f(by2)}"></path>`;
+  dial.insertAdjacentHTML('beforeend',h);
+
+  const g=el('g',{transform:`translate(${cx},${cy})`});
+  let k='<circle class="sv-face" r="102"></circle><circle class="knob" r="86"></circle>';
+  for(let i=0;i<36;i++){const t=i*10*Math.PI/180;k+=`<line class="grip" x1="${f(Math.sin(t)*78)}" y1="${f(-Math.cos(t)*78)}" x2="${f(Math.sin(t)*85)}" y2="${f(-Math.cos(t)*85)}"></line>`}
+  k+='<g id="ridge"><rect class="ridge" x="-13" y="-84" width="26" height="168" rx="11"></rect><rect class="ptr" x="-4.5" y="-78" width="9" height="28" rx="3"></rect></g>';
+  g.innerHTML=k;dial.appendChild(g);
+
+  /* SMART red sector: one switch position with three labels, exactly as on the body */
+  const a1=-55,a2=-122;const[p1x,p1y]=pol(a1,r2),[p2x,p2y]=pol(a2,r2),[p3x,p3y]=pol(a2,r1),[p4x,p4y]=pol(a1,r1);
+  const sz=el('g',{class:'hot dz','data-pick':'mode:smart',tabindex:'0',role:'button','aria-label':'Перемикач: SMART (V, Ω)'});
+  const[sx,sy]=pol(-66,124),[vx,vy]=pol(-87,124),[wx,wy]=pol(-107,124);
+  sz.innerHTML=`<path class="smart-sec" d="M${f(p1x)},${f(p1y)} A${r2},${r2} 0 0 0 ${f(p2x)},${f(p2y)} L${f(p3x)},${f(p3y)} A${r1},${r1} 0 0 1 ${f(p4x)},${f(p4y)} Z"></path>`+
+    `<text class="sl" x="${f(sx)}" y="${f(sy+4)}">SMART</text>`+
+    `<g transform="translate(${f(vx)},${f(vy-8)})">${ACDC('sli')}</g><text class="sl big" x="${f(vx)}" y="${f(vy+11)}">V</text>`+
+    `<text class="sl big" x="${f(wx)}" y="${f(wy-1)}">Ω</text><text class="sl" x="${f(wx)}" y="${f(wy+12)}">·)))</text>`;
+  dial.appendChild(sz);
+
+  ORDER.filter(m=>m!=='smart').forEach(m=>{const[x,y]=pol(MODES[m].angle,R);
+    const z=el('g',{class:'hot dz',transform:`translate(${f(x)},${f(y)})`,'data-pick':'mode:'+m,tabindex:'0',role:'button','aria-label':'Перемикач: '+MODES[m].chip});
+    z.innerHTML='<circle class="hit" r="23"></circle>'+LBL[m];dial.appendChild(z)});
+})();
+const jacks=document.getElementById('jacks');const JY=642;
+['a','com','v'].forEach(k=>{const j=JACKS[k],y=JY;
+  const g=el('g',{class:'hot jack','data-pick':'jack:'+k,tabindex:'0',role:'button','aria-label':'Гніздо '+j.label});
+  g.innerHTML=(j.top?`<text class="sv-t" x="${j.x}" y="${y-50}" style="fill:var(--dev-text)">${j.top}</text>`:'')+`<text class="jl" x="${j.x}" y="${y-34}">${j.label}</text><circle class="jring" cx="${j.x}" cy="${y}" r="25"></circle><circle class="jhole" cx="${j.x}" cy="${y}" r="14"></circle><circle class="jpin" cx="${j.x}" cy="${y}" r="5"></circle>`;
+  jacks.appendChild(g)});
+jacks.insertAdjacentHTML('beforeend',
+  `<text class="sv-t" x="130" y="${JY-2}" style="font-size:7.5px">10A</text><text class="sv-t" x="130" y="${JY+9}" style="font-size:7.5px">FUSED</text>`+
+  `<text class="sv-t" x="230" y="${JY-8}" style="font-size:7.5px">CAT III</text><text class="sv-t" x="230" y="${JY+3}" style="font-size:7.5px">600V</text><text class="sv-t" x="230" y="${JY+14}" style="font-size:7.5px">600mA</text>`);
+/* seven segment */
+const SEGS={'0':'abcdef','1':'bc','2':'abdeg','3':'abcdg','4':'bcfg','5':'acdfg','6':'acdefg','7':'abc','8':'abcdefg','9':'abcdfg','-':'g','L':'def','O':'abcdef','E':'adefg','F':'aefg','V':'bcdef','I':'ef','H':'bcefg',' ':''};
+const digits=document.getElementById('digits');const DW=40,DH=76,DT=7,DY=66,DX0=114,DSTEP=50;
+function hseg(x,y,L,t){return `${x},${y+t/2} ${x+t/2},${y} ${x+L-t/2},${y} ${x+L},${y+t/2} ${x+L-t/2},${y+t} ${x+t/2},${y+t}`}
+function vseg(x,y,L,t){return `${x+t/2},${y} ${x+t},${y+t/2} ${x+t},${y+L-t/2} ${x+t/2},${y+L} ${x},${y+L-t/2} ${x},${y+t/2}`}
+(function(){let h='';for(let i=0;i<4;i++){const x=DX0+i*DSTEP,y=DY,hl=DW-DT-2,vl=DH/2-DT/2-2;
+  const P={a:hseg(x+DT/2+1,y,hl,DT),g:hseg(x+DT/2+1,y+DH/2-DT/2,hl,DT),d:hseg(x+DT/2+1,y+DH-DT,hl,DT),
+    f:vseg(x,y+DT/2+1,vl,DT),b:vseg(x+DW-DT,y+DT/2+1,vl,DT),e:vseg(x,y+DH/2+1,vl,DT),c:vseg(x+DW-DT,y+DH/2+1,vl,DT)};
+  for(const s in P)h+=`<polygon class="seg" data-d="${i}" data-s="${s}" points="${P[s]}"></polygon>`;
+  h+=`<rect class="seg" data-d="${i}" data-s="p" x="${x+DW+2}" y="${y+DH-6}" width="6" height="6"></rect>`}
+  digits.innerHTML=h})();
+
+/* ---------- state → device ---------- */
+function lcdNow(){
+  if(S.mode==='off')return null;
+  if(S.ncv)return{txt:'H',unit:'',fl:['ncv']};
+  if(S.hold&&S.frozen)return S.frozen;
+  const m=MODES[S.mode];
+  if(S.freq&&S.mode==='v')return{txt:'50.00',unit:'Hz',acdc:'AC',fl:[],auto:true};
+  const s=S.override||m.subs[S.sub]||m.subs[0];
+  return Object.assign({fl:[]},s,{auto:!!m.auto,fl:s.fl||[]});
+}
+function drawLcd(){
+  const st=lcdNow();
+  const chars=[];if(st&&st.txt){for(const ch of st.txt){if(ch==='.'&&chars.length)chars[chars.length-1].p=true;else chars.push({c:ch,p:false})}}
+  while(chars.length<4)chars.unshift({c:' ',p:false});
+  const use=chars.slice(-4);
+  digits.querySelectorAll('.seg').forEach(p=>{const d=+p.dataset.d,s=p.dataset.s,c=use[d];
+    const on=s==='p'?c.p:(SEGS[c.c]||'').includes(s);p.classList.toggle('on',on)});
+  const fl=st?st.fl:[];
+  const set=(id,on)=>document.getElementById(id).classList.toggle('on',!!on);
+  set('a-auto',st&&st.auto&&!S.ncv);set('a-hold',st&&S.hold);set('a-beep',fl.includes('beep'));set('a-diode',fl.includes('diode'));
+  set('a-ncv',fl.includes('ncv'));set('a-live',fl.includes('live'));set('a-hv',fl.includes('hv'));document.getElementById('a-apo').classList.toggle('on',!!st);
+  set('a-ac',st&&st.acdc==='AC');set('a-dc',st&&st.acdc==='DC');
+  document.getElementById('unit').textContent=st?st.unit||'':'';
+  document.getElementById('screen').classList.toggle('lit',S.back&&S.mode!=='off');
+  document.getElementById('led').classList.toggle('on',S.mode!=='off'&&(S.ncv||(S.mode==='live'&&!S.hold)));
+  document.getElementById('beam').hidden=!(S.light&&S.mode!=='off');
+}
+function drawWires(){
+  const w=document.getElementById('wires');const jk=MODES[S.mode].jack;let h='';
+  if(jk){const jx=JACKS[jk].x,bx=180,y=JY;
+    h+=`<path class="w-edge" d="M${bx},${y} C${bx},${y+58} ${bx-30},${y+78} ${bx-34},790"></path><path class="w-blk" d="M${bx},${y} C${bx},${y+58} ${bx-30},${y+78} ${bx-34},790"></path>`;
+    const ex=jk==='a'?jx-22:jx+24;
+    h+=`<path class="w-red" d="M${jx},${y} C${jx},${y+58} ${ex},${y+78} ${ex},790"></path>`;
+    h+=`<circle class="p-blk" cx="${bx}" cy="${y}" r="16"></circle><circle class="p-shine" cx="${bx-5}" cy="${y-5}" r="5"></circle>`;
+    h+=`<circle class="p-red" cx="${jx}" cy="${y}" r="16"></circle><circle class="p-shine" cx="${jx-5}" cy="${y-5}" r="5"></circle>`}
+  w.innerHTML=h;
+}
+let curA=null,anim=null;
+const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+function setA(a){document.getElementById('ridge').setAttribute('transform',`rotate(${a.toFixed(2)})`)}
+function turnTo(a){
+  if(curA===null||reduce){curA=a;setA(a);return}
+  if(a===curA)return;cancelAnimationFrame(anim);
+  const from=curA,t0=performance.now(),dur=360;
+  const ease=t=>{const c=1.4;return 1+(c+1)*Math.pow(t-1,3)+c*Math.pow(t-1,2)};
+  (function step(now){const t=Math.min(1,(now-t0)/dur);curA=from+(a-from)*ease(t);setA(curA);if(t<1)anim=requestAnimationFrame(step);else curA=a})(t0);
+}
+function drawDevice(){
+  turnTo(MODES[S.mode].angle);
+  document.querySelectorAll('.dz').forEach(z=>z.classList.toggle('on',z.dataset.pick==='mode:'+S.mode));
+  document.querySelectorAll('#meter .hot:not(.dz)').forEach(z=>z.classList.toggle('sel',z.dataset.pick===S.focus));
+  drawLcd();drawWires();
+}
+
+/* ---------- panel ---------- */
+function probes(jk){
+  if(jk==='v')return '<div class="probes"><span class="pr"><i class="d k"></i>чорний → COM</span><span class="pr"><i class="d r"></i>червоний → VΩmA</span></div>';
+  if(jk==='a')return '<div class="probes"><span class="pr"><i class="d k"></i>чорний → COM</span><span class="pr"><i class="d r"></i>червоний → A (10A)</span></div>';
+  return '';
+}
+function note(n){if(!n)return'';return `<div class="note ${n[0]}"><b>${n[0]==='warn'?'Обережно':'Підказка'}</b>${n[1]}</div>`}
+function spec(s){return s?`<div class="spec">${s}</div>`:''}
+function stepsHTML(a){return a&&a.length?`<ol class="steps">${a.map(s=>`<li><span>${s}</span></li>`).join('')}</ol>`:''}
+function subsHTML(id,m){
+  if(m.fns)return `<div class="sub"><div class="glabel">Функції в цьому положенні</div><div class="chips">${m.fns.map(fid=>`<button class="chip" data-pick="fn:${fid}">${FN[fid].chip}</button>`).join('')}</div></div>`;
+  if(m.subNames)return `<div class="sub"><div class="glabel">SEL перемикає</div><div class="chips">${m.subNames.map((n,i)=>`<button class="chip" data-sub="${i}" aria-pressed="${S.mode===id&&S.sub===i&&!S.override}">${n}</button>`).join('')}</div></div>`;
+  return '';
+}
+function renderPicker(){
+  const pressed=k=>`aria-pressed="${S.focus===k}"`;
+  const pk=document.getElementById('picker'),psl=pk.scrollLeft;
+  pk.innerHTML=
+   `<div class="group"><div class="glabel">Усі функції · ${FLIST.length-1}</div><div class="chips">${FLIST.map((x,i)=>`<button class="chip" data-fl="${i}" ${pressed(x[1])}>${x[0]}</button>`).join('')}</div></div>`+
+   `<div class="group"><div class="glabel">Кнопки й екран</div><div class="chips">${['sel','ncv','hz','hold'].map(b=>`<button class="chip" data-pick="btn:${b}" ${pressed('btn:'+b)}>${BTNS[b].chip}</button>`).join('')}<button class="chip" data-pick="lcd:lcd" ${pressed('lcd:lcd')}>Екран</button></div></div>`+
+   `<div class="group"><div class="glabel">Гнізда</div><div class="chips">${['com','v','a'].map(j=>`<button class="chip" data-pick="jack:${j}" ${pressed('jack:'+j)}>${JACKS[j].chip}</button>`).join('')}</div></div>`;
+  pk.scrollLeft=psl;keepActive(pk);
+}
+function renderInfo(){
+  const [kind,id]=S.focus.split(':');let h='';
+  if(kind==='mode'){const m=MODES[id];
+    h=`<div class="eyebrow">Положення перемикача</div><h2>${m.title}</h2><p>${m.what}</p>${spec(m.spec)}${probes(m.jack)}${subsHTML(id,m)}${stepsHTML(m.steps)}${note(m.note)}`}
+  else if(kind==='fn'){const x=FN[id],m=MODES[x.mode];
+    h=`<div class="eyebrow">Функція · положення ${m.chip}</div><h2>${x.title}</h2><p>${x.what}</p>${spec(x.spec)}${probes(m.jack)}${stepsHTML(x.steps)}${note(x.note)}`}
+  else if(kind==='btn'){const b=BTNS[id];let extra='';
+    if(id==='sel'){const m=MODES[S.mode];const names=m.fns?m.fns.filter(f=>!FN[f].freq).map(f=>FN[f].chip):m.subNames;
+      extra=`<div class="result">${names?`Зараз перемикач на «${m.short}»: ${names.join(' ↔ ')}. Обрано: ${names[S.sub]}.`:`Зараз перемикач на «${m.short}», тут SEL нічого не перемикає.`}</div>`}
+    if(id==='ncv'&&S.mode==='off')extra='<div class="result">Прилад вимкнений. Поверніть перемикач у будь-яке положення, потім натисніть NCV.</div>';
+    if(id==='hz'&&S.mode!=='off'&&S.mode!=='v')extra=`<div class="result">Частота вимірюється в положенні V (режим AC). Зараз перемикач на «${MODES[S.mode].short}».</div>`;
+    const acts=b.acts?`<div class="acts">${b.acts.map(a=>`<button class="chip" data-do="${a[0]}">${a[1]}</button>`).join('')}</div>`:b.hold?`<div class="acts"><button class="chip" data-hold="ncv" aria-pressed="${S.ncv}">Натисніть і тримайте: NCV</button></div>`:'';
+    h=`<div class="eyebrow">Кнопка</div><h2>${b.title}</h2><p>${b.what}</p>${spec(b.spec)}${acts}${extra}${stepsHTML(b.steps)}${note(b.note)}`}
+  else if(kind==='jack'){const j=JACKS[id];
+    h=`<div class="eyebrow">Гніздо</div><h2>${j.title}</h2><p>${j.what}</p>${note(j.note)}`}
+  else{h=`<div class="eyebrow">Екран</div><h2>${LCDINFO.title}</h2><p>${LCDINFO.what}</p><dl class="gl">${GLOSS.map(g=>`<dt>${g[0]}</dt><dd>${g[1]}</dd>`).join('')}</dl>`}
+  document.getElementById('info').innerHTML=h;
+}
+function renderScen(){
+  const sc=document.getElementById('scenchips'),ssl=sc.scrollLeft;
+  sc.innerHTML=SCEN.map(s=>`<button class="chip" data-scen="${s.id}" aria-pressed="${S.scen===s.id}">${s.chip}</button>`).join('');
+  sc.scrollLeft=ssl;keepActive(sc);
+  const s=SCEN.find(x=>x.id===S.scen);const m=MODES[s.mode];
+  const pos=`<div class="glabel">Перемикач: ${m.chip}${s.id==='hidden'?' · тримати кнопку NCV':''}</div>`;
+  document.getElementById('scen').innerHTML=`<div class="eyebrow">Сценарій</div><h2>${s.title}</h2>${pos}${s.id==='hidden'?'':probes(m.jack)}${stepsHTML(s.steps)}${s.result?`<div class="result">${s.result}</div>`:''}${s.warn?note(['warn',s.warn]):''}`;
+}
+function renderTabs(){
+  const dev=S.tab==='dev';
+  document.getElementById('tab-dev').setAttribute('aria-selected',dev);document.getElementById('tab-how').setAttribute('aria-selected',!dev);
+  document.getElementById('pane-dev').hidden=!dev;document.getElementById('pane-how').hidden=dev;document.getElementById('picker').hidden=!dev;document.getElementById('scenwrap').hidden=dev;
+}
+const isPhone=()=>window.matchMedia&&matchMedia('(max-width:780px)').matches;
+function keepActive(el){if(!isPhone())return;const c=el.querySelector('[aria-pressed="true"]');if(!c)return;
+  const l=c.offsetLeft,r=l+c.offsetWidth;if(l<el.scrollLeft+8||r>el.scrollLeft+el.clientWidth-36)el.scrollTo({left:Math.max(0,l-40),behavior:reduce?'auto':'smooth'})}
+function revealMeter(){if(!isPhone())return;const nb=document.getElementById('navbar').getBoundingClientRect().bottom;
+  const r=document.querySelector('.meter-wrap').getBoundingClientRect();
+  if(r.top<nb-4||r.top>innerHeight*0.4)window.scrollTo({top:scrollY+r.top-nb-6,behavior:reduce?'auto':'smooth'})}
+function render(){drawDevice();renderTabs();renderPicker();renderInfo();renderScen()}
+
+/* ---------- actions ---------- */
+function resetMeasure(){S.ncv=false;S.freq=false;S.hold=false;S.frozen=null;S.override=null}
+function setMode(m,sub){S.mode=m;S.sub=sub;resetMeasure()}
+function pick(key,{long=false}={}){
+  const [kind,id]=key.split(':');S.tab='dev';
+  if(kind==='mode'){if(S.mode!==id)setMode(id,0);S.focus=key}
+  else if(kind==='fn'){const x=FN[id];setMode(x.mode,x.sub);if(x.freq)S.freq=true;S.focus=key}
+  else if(kind==='btn'){S.focus=key;press(id,long)}
+  else S.focus=key;
+  render();
+}
+function press(id,long){
+  const off=S.mode==='off';
+  if(id==='sel'){const m=MODES[S.mode];const n=m.subs.length;if(n>1&&!off&&!S.hold){S.sub=(S.sub+1)%n;S.override=null;S.freq=false;S.ncv=false}}
+    if(id==='hz'&&!off){if(long)S.light=!S.light;else if(S.mode==='v'&&!S.hold){S.sub=1;S.override=null;S.freq=!S.freq;S.ncv=false}}
+  if(id==='hold'&&!off){if(long)S.back=!S.back;else{if(S.hold){S.hold=false;S.frozen=null}else{S.frozen=lcdNow();S.hold=true}}}
+  const g=document.querySelector(`#meter .btn[data-pick="btn:${id}"]`);
+  if(g){g.classList.add('press');setTimeout(()=>g.classList.remove('press'),160)}
+}
+function applyScen(id){const s=SCEN.find(x=>x.id===id);S.scen=id;setMode(s.mode,s.sub||0);S.override=s.lcd?Object.assign({fl:[]},s.lcd):null;S.ncv=!!s.ncv;S.focus='mode:'+s.mode;render()}
+
+const meter=document.getElementById('meter');
+let lpTimer=null,lpFired=false;
+meter.addEventListener('pointerdown',e=>{const h=e.target.closest('.hot[data-long]');if(!h)return;lpFired=false;
+  lpTimer=setTimeout(()=>{lpFired=true;pick(h.dataset.pick,{long:true})},550)});
+['pointerup','pointerleave','pointercancel'].forEach(t=>meter.addEventListener(t,()=>{clearTimeout(lpTimer)}));
+meter.addEventListener('click',e=>{const h=e.target.closest('.hot');if(!h)return;if(lpFired){lpFired=false;return}pick(h.dataset.pick)});
+meter.addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.key!==' ')return;const h=e.target.closest('.hot');if(!h)return;e.preventDefault();pick(h.dataset.pick)});
+meter.addEventListener('contextmenu',e=>{if(e.target.closest('.hot[data-long],[data-hold]'))e.preventDefault()});
+/* NCV: momentary — active only while the button is held */
+let holding=false;
+function holdOn(){if(holding)return;holding=true;S.focus='btn:ncv';S.tab='dev';if(S.mode!=='off'){S.ncv=true;S.freq=false}render()}
+function holdOff(){if(!holding)return;holding=false;S.ncv=false;render()}
+document.addEventListener('pointerdown',e=>{if(e.target.closest('[data-hold]')){e.preventDefault();holdOn()}});
+['pointerup','pointercancel'].forEach(t=>document.addEventListener(t,holdOff));
+window.addEventListener('blur',holdOff);
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.closest&&e.target.closest('[data-hold]')){e.preventDefault();e.stopPropagation();if(!e.repeat)holdOn()}},true);
+document.addEventListener('keyup',e=>{if(e.key==='Enter'||e.key===' ')holdOff()});
+document.addEventListener('contextmenu',e=>{if(e.target.closest('[data-hold]'))e.preventDefault()});
+
+document.querySelector('.panel').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  if(b.closest('#navbar')&&!b.closest('.tabs'))requestAnimationFrame(revealMeter);
+  if(b.id==='tab-dev'){S.tab='dev';render();return}
+  if(b.id==='tab-how'){S.tab='how';applyScen(S.scen);return}
+  if(b.dataset.fl){const x=FLIST[+b.dataset.fl];S.tab='dev';
+    if(x[2])x[2]();else{const fn=FN[x[1].slice(3)];setMode(fn.mode,fn.sub);if(fn.freq)S.freq=true}
+    S.focus=x[1];render();return}
+  if(b.dataset.pick){const k=b.dataset.pick.split(':')[0];if(k==='btn'){S.focus=b.dataset.pick;render()}else pick(b.dataset.pick);return}
+  if(b.dataset.sub){const id=S.focus.slice(5);if(S.mode!==id)setMode(id,0);S.sub=+b.dataset.sub;S.override=null;S.freq=false;S.ncv=false;S.hold=false;S.frozen=null;render();return}
+  if(b.dataset.do){const [id,kind]=b.dataset.do.split('-');press(id,kind==='long');render();return}
+  if(b.dataset.scen){S.tab='how';applyScen(b.dataset.scen);return}
+});
+document.getElementById('gloss').innerHTML=GLOSS.map(g=>`<dt>${g[0]}</dt><dd>${g[1]}</dd>`).join('');
+render();
+})();
+</script>
+
+</body>
+</html>
