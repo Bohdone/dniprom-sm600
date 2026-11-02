@@ -154,6 +154,8 @@ path.ann{stroke:none}
 .p-red{fill:var(--probe-red);stroke:var(--dev-hole);stroke-width:2}
 .p-blk{fill:var(--probe-black);stroke:var(--dev-line);stroke-width:2}
 .p-shine{fill:rgba(255,255,255,.18)}
+#wires{pointer-events:none}
+[data-hold]{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 
 .navbar{display:grid;gap:18px;min-width:0}
 #meter{-webkit-touch-callout:none}
@@ -182,6 +184,12 @@ path.ann{stroke:none}
   .navbar .chip{white-space:nowrap;padding:8px 13px;flex:none}
   .ref{grid-template-columns:minmax(0,1fr)}
   .card{padding:18px}
+  dl.gl{gap:6px 12px}
+}
+@media (max-width:420px){ dl.gl dt{white-space:normal;max-width:9.5em} }
+@media (max-width:780px) and (max-height:520px) and (orientation:landscape){
+  .navbar{position:static}
+  #meter{height:min(86vh,560px)}
 }
 @media (prefers-reduced-motion:reduce){ #screen{transition:none} }
 </style>
@@ -194,7 +202,7 @@ path.ann{stroke:none}
     <div class="stripe" aria-hidden="true"></div>
     <div class="kicker">Dnipro-M · SM600 · 9999 відліків · TrueRMS · CAT III 600 V</div>
     <h1>Як користуватися мультиметром SM600</h1>
-    <p class="lede">Натискайте на перемикач, кнопки, екран і гнізда прямо на схемі: прилад поверне ручку, покаже приклад на екрані й підкаже, куди вставити щупи. Кожна функція приладу винесена окремою кнопкою праворуч, а у вкладці «Як виміряти» зібрані готові сценарії для дому й авто.</p>
+    <p class="lede">Натискайте на перемикач, кнопки, екран і гнізда прямо на схемі: прилад поверне ручку, покаже приклад на екрані й підкаже, куди вставити щупи. Кожна функція приладу винесена окремою кнопкою в панель поруч зі схемою, а у вкладці «Як виміряти» зібрані готові сценарії для дому й авто.</p>
   </header>
 
   <section class="stage">
@@ -694,7 +702,13 @@ function keepActive(el){if(!isPhone())return;const c=el.querySelector('[aria-pre
 function revealMeter(){if(!isPhone())return;const nb=document.getElementById('navbar').getBoundingClientRect().bottom;
   const r=document.querySelector('.meter-wrap').getBoundingClientRect();
   if(r.top<nb-4||r.top>innerHeight*0.4)window.scrollTo({top:scrollY+r.top-nb-6,behavior:reduce?'auto':'smooth'})}
-function render(){drawDevice();renderTabs();renderPicker();renderInfo();renderScen()}
+const FOCUS_ATTRS=['data-fl','data-pick','data-sub','data-do','data-scen','data-hold'];
+function render(){
+  const a=document.activeElement;let sel=null;
+  if(a&&a.tagName==='BUTTON'&&a.closest('.panel')){const k=FOCUS_ATTRS.find(x=>a.hasAttribute(x));if(k)sel=`.panel button[${k}="${a.getAttribute(k)}"]`}
+  drawDevice();renderTabs();renderPicker();renderInfo();renderScen();
+  if(sel&&!a.isConnected){const c=document.querySelector(sel);if(c)c.focus({preventScroll:true})}
+}
 
 /* ---------- actions ---------- */
 function resetMeasure(){S.ncv=false;S.freq=false;S.hold=false;S.frozen=null;S.override=null}
@@ -719,7 +733,7 @@ function applyScen(id){const s=SCEN.find(x=>x.id===id);S.scen=id;setMode(s.mode,
 
 const meter=document.getElementById('meter');
 let lpTimer=null,lpFired=false;
-meter.addEventListener('pointerdown',e=>{const h=e.target.closest('.hot[data-long]');if(!h)return;lpFired=false;
+meter.addEventListener('pointerdown',e=>{lpFired=false;clearTimeout(lpTimer);const h=e.target.closest('.hot[data-long]');if(!h)return;
   lpTimer=setTimeout(()=>{lpFired=true;pick(h.dataset.pick,{long:true})},550)});
 ['pointerup','pointerleave','pointercancel'].forEach(t=>meter.addEventListener(t,()=>{clearTimeout(lpTimer)}));
 meter.addEventListener('click',e=>{const h=e.target.closest('.hot');if(!h)return;if(lpFired){lpFired=false;return}pick(h.dataset.pick)});
