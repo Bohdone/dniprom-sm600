@@ -159,6 +159,7 @@ path.ann{stroke:none}
 .p-blk{fill:var(--probe-black);stroke:var(--dev-line);stroke-width:2}
 .p-shine{fill:rgba(255,255,255,.18)}
 #wires{pointer-events:none}
+#wires .probe{pointer-events:auto}
 [data-hold]{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 
 .navbar{display:grid;gap:18px;min-width:0}
@@ -196,6 +197,9 @@ path.ann{stroke:none}
   #meter{height:min(86vh,560px)}
 }
 @media (prefers-reduced-motion:reduce){ #screen{transition:none} }
+/* сенсорні екрани: ширші невидимі зони натискання; горизонтальний телефон: схема більша */
+@media (pointer:coarse){.hit{stroke:rgba(0,0,0,0);stroke-width:10px}}
+@media (min-width:781px) and (max-height:520px){#dev,#meter{max-height:calc(100vh - 96px)!important}#dev3d,.box3d{max-height:calc(100vh - 110px)!important}.dev-wrap,.meter-wrap{top:8px}}
 </style>
 </head>
 <body>
@@ -212,7 +216,7 @@ path.ann{stroke:none}
 
   <section class="stage">
     <div class="meter-wrap">
-      <svg id="meter" viewBox="0 -26 360 816" aria-label="Схема мультиметра Dnipro-M SM600">
+      <svg id="meter" viewBox="0 -26 360 840" aria-label="Схема мультиметра Dnipro-M SM600">
         <polygon id="beam" class="beam" points="293,2 307,2 336,-26 264,-26" hidden></polygon>
         <rect class="sv-bump" x="8" y="0" width="344" height="712" rx="36"></rect>
         <rect class="sv-body" x="22" y="14" width="316" height="684" rx="24"></rect>
@@ -452,6 +456,16 @@ const JACKS={
     what:'Червоний щуп для всього, крім великих струмів: SMART, Live, напруга, опір, продзвонювання, діоди, ємність, батарейки й струми до 600 мА. Захищене запобіжником (для заміни за паспортом 630 мА / 250 В).',
     note:['tip','Маркування CAT III 600 V біля гнізда означає: можна вимірювати в розетках, щитках і стаціонарній проводці будинку.']}
 };
+const PROBES={
+  r:{title:'Червоний щуп: плюс, фаза, виміряна точка',
+    what:'Червоний щуп вставляється в гніздо VΩmA (для всього, крім великих струмів) або в гніздо A (10 А) для струмів понад 600 мА. Його торкаються до точки, яку вимірюють: фази, плюса, виводу елемента.',
+    steps:['Огляньте перед роботою: ізоляція дроту ціла, без перетертя й оголеної жили, наконечник не хитається, обмежувач-щиток на місці.','Перевірте цілісність: перемикач на продзвонювання, зімкніть червоний і чорний щупи — має пищати й показувати майже 0. Мовчить — обрив у щупі чи поганий контакт у гнізді.','Тримайте за ручку нижче обмежувача. Пальці не заходять за обмежувач, металевого кінчика торкайтеся лише потрібної точки.','У мережі 230 В працюйте однією рукою, другу приберіть: не тримайтеся нею за трубу, радіатор чи заземлений корпус.','Спершу ставте чорний (COM), потім червоний; знімайте у зворотному порядку: спочатку червоний (загальна практика безпеки).','Після виміру струму повертайте червоний щуп з гнізда A у VΩmA: у гнізді A він замикає розетку накоротко.'],
+    note:['warn','Щуп у гнізді A або в режимі струму ніколи не торкайте до розетки чи клем джерела: це коротке замикання через запобіжник.']},
+  k:{title:'Чорний щуп: COM, нуль, мінус',
+    what:'Чорний щуп завжди вставляється в гніздо COM, у всіх положеннях перемикача без винятку. Його торкаються до «нульової» точки: нуля мережі, мінуса, корпуса.',
+    steps:['Завжди в COM; якщо щуп випадково вставлений в інше гніздо, показ буде хибним.','Для напруги в мережі: чорний на нуль (або на другий отвір розетки), червоний на фазу.','Для опору й прозвонювання схема знеструмлена: чорний і червоний — на два кінці перевіряного елемента, полярність не важлива.','Тримайте так само, як червоний: за ручку нижче обмежувача, однією рукою.'],
+    note:['tip','Щупи й гнізда розраховані на CAT III 600 V. Замінні щупи беріть з такою самою категорією, а не «будь-які з прищіпками».']}
+};
 const GLOSS=[
   ['OL','поза діапазоном або обрив кола'],
   ['AC / DC','змінна / постійна'],
@@ -620,14 +634,19 @@ function drawLcd(){
   document.getElementById('led').classList.toggle('on',S.mode!=='off'&&(S.ncv||(S.mode==='live'&&!S.hold)));
   document.getElementById('beam').hidden=!(S.light&&S.mode!=='off');
 }
+function probeSVG(x,col){const c=col==='r'?'#d62f26':'#0c0c0d',ed=col==='r'?'#8c1d17':'#4d5158';
+  return `<g class="hot probe" data-pick="probe:${col}" tabindex="0" role="button" aria-label="${col==='r'?'Червоний':'Чорний'} щуп"><rect class="hit" x="${x-20}" y="738" width="40" height="92"></rect>
+   <rect x="${x-8}" y="744" width="16" height="44" rx="6" fill="${c}" stroke="${ed}" stroke-width="1.5"></rect><rect x="${x-13}" y="786" width="26" height="6" rx="3" fill="${c}" stroke="${ed}" stroke-width="1.5"></rect>
+   <rect x="${x-3}" y="792" width="6" height="26" rx="2" fill="#c9ccd0" stroke="#7d838a"></rect><path d="M${x-3},818 L${x},826 L${x+3},818 Z" fill="#c9ccd0" stroke="#7d838a" stroke-width=".8"></path></g>`}
 function drawWires(){
   const w=document.getElementById('wires');const jk=MODES[S.mode].jack;let h='';
-  if(jk){const jx=JACKS[jk].x,bx=180,y=JY;
-    h+=`<path class="w-edge" d="M${bx},${y} C${bx},${y+58} ${bx-30},${y+78} ${bx-34},790"></path><path class="w-blk" d="M${bx},${y} C${bx},${y+58} ${bx-30},${y+78} ${bx-34},790"></path>`;
+  if(jk){const jx=JACKS[jk].x,bx=180,y=JY,bex=bx-34;
+    h+=`<path class="w-edge" d="M${bx},${y} C${bx},${y+58} ${bx-30},${y+78} ${bex},746"></path><path class="w-blk" d="M${bx},${y} C${bx},${y+58} ${bx-30},${y+78} ${bex},746"></path>`;
     const ex=jk==='a'?jx-22:jx+24;
-    h+=`<path class="w-red" d="M${jx},${y} C${jx},${y+58} ${ex},${y+78} ${ex},790"></path>`;
+    h+=`<path class="w-red" d="M${jx},${y} C${jx},${y+58} ${ex},${y+78} ${ex},746"></path>`;
     h+=`<circle class="p-blk" cx="${bx}" cy="${y}" r="16"></circle><circle class="p-shine" cx="${bx-5}" cy="${y-5}" r="5"></circle>`;
-    h+=`<circle class="p-red" cx="${jx}" cy="${y}" r="16"></circle><circle class="p-shine" cx="${jx-5}" cy="${y-5}" r="5"></circle>`}
+    h+=`<circle class="p-red" cx="${jx}" cy="${y}" r="16"></circle><circle class="p-shine" cx="${jx-5}" cy="${y-5}" r="5"></circle>`;
+    h+=probeSVG(bex,'k')+probeSVG(ex,'r')}
   w.innerHTML=h;
 }
 let curA=null,anim=null;
@@ -667,6 +686,7 @@ function renderPicker(){
   pk.innerHTML=
    `<div class="group"><div class="glabel">Усі функції · ${FLIST.length-1}</div><div class="chips">${FLIST.map((x,i)=>`<button class="chip" data-fl="${i}" ${pressed(x[1])}>${x[0]}</button>`).join('')}</div></div>`+
    `<div class="group"><div class="glabel">Кнопки й екран</div><div class="chips">${['sel','ncv','hz','hold'].map(b=>`<button class="chip" data-pick="btn:${b}" ${pressed('btn:'+b)}>${BTNS[b].chip}</button>`).join('')}<button class="chip" data-pick="lcd:lcd" ${pressed('lcd:lcd')}>Екран</button></div></div>`+
+   `<div class="group"><div class="glabel">Щупи</div><div class="chips">${['r','k'].map(c=>`<button class="chip" data-pick="probe:${c}" ${pressed('probe:'+c)}>${c==='r'?'Червоний щуп':'Чорний щуп'}</button>`).join('')}</div></div>`+
    `<div class="group"><div class="glabel">Гнізда</div><div class="chips">${['com','v','a'].map(j=>`<button class="chip" data-pick="jack:${j}" ${pressed('jack:'+j)}>${JACKS[j].chip}</button>`).join('')}</div></div>`;
   pk.scrollLeft=psl;keepActive(pk);
 }
@@ -685,6 +705,8 @@ function renderInfo(){
     h=`<div class="eyebrow">Кнопка</div><h2>${b.title}</h2><p>${b.what}</p>${spec(b.spec)}${acts}${extra}${stepsHTML(b.steps)}${note(b.note)}`}
   else if(kind==='jack'){const j=JACKS[id];
     h=`<div class="eyebrow">Гніздо</div><h2>${j.title}</h2><p>${j.what}</p>${note(j.note)}`}
+  else if(kind==='probe'){const x=PROBES[id];
+    h=`<div class="eyebrow">Щуп</div><h2>${x.title}</h2><p>${x.what}</p>${probes(MODES[S.mode].jack)}${stepsHTML(x.steps)}${note(x.note)}`}
   else{h=`<div class="eyebrow">Екран</div><h2>${LCDINFO.title}</h2><p>${LCDINFO.what}</p><dl class="gl">${GLOSS.map(g=>`<dt>${g[0]}</dt><dd>${g[1]}</dd>`).join('')}</dl>`}
   document.getElementById('info').innerHTML=h;
 }
